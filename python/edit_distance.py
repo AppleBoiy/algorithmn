@@ -2,7 +2,7 @@
 
 import numpy as np
 
-DEBUG = True
+DEBUG = False
 
 
 def edit_distance(s1, s2):
@@ -41,4 +41,7 @@ def test_edit_distance():
 
 
 if __name__ == "__main__":
-    test_edit_distance()
+    w1 = input("Enter first word: ")
+    w2 = input("Enter second word: ")
+
+    print(f"Edit distance between {w1} and {w2} is {edit_distance(w1, w2)}")
