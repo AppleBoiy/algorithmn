@@ -1,0 +1,28 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\begin{document}
+
+\begin{algorithm}
+\caption{Pegasos Algorithm}
+\begin{algorithmic}[1]
+\Require $S, \lambda, T$
+\State \textbf{Initialize:} Set $\mathbf{w}_1 = 0$
+\For{$t = 1, 2, \dots, T$}
+    \State Choose $i_t \in \{1, \dots, |S|\}$ uniformly at random
+    \State Set $\eta_t = \frac{1}{\lambda t}$
+    \If{$y_{i_t} \left\langle \mathbf{w}_t, \mathbf{x}_{i_t} \right\rangle < 1$}
+        \State Set $\mathbf{w}_{t+1} \leftarrow (1 - \eta_t \lambda) \mathbf{w}_t + \eta_t y_{i_t} \mathbf{x}_{i_t}$
+    \Else
+        \State Set $\mathbf{w}_{t+1} \leftarrow (1 - \eta_t \lambda) \mathbf{w}_t$
+    \EndIf
+    \State \textbf{Optional:} $\mathbf{w}_{t+1} \leftarrow \min \left\{1, \frac{1 / \sqrt{\lambda}}{\left\| \mathbf{w}_{t+1} \right\|} \right\} \mathbf{w}_{t+1}$
+\EndFor
+\State \textbf{Output:} $\mathbf{w}_{T+1}$
+\end{algorithmic}\label{alg:algorithm}
+
+\end{algorithm}
+
+\end{document}
