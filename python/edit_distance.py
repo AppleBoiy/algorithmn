@@ -66,12 +66,5 @@ def test_levenshtein_distance():
     s2 = "intention"
     assert levenshtein_distance(s1, s2) == 5
 
-def main():
-    w1 = input("Enter first word: ")
-    w2 = input("Enter second word: ")
-
-    print(f"Edit distance between {w1} and {w2} is {edit_distance(w1, w2)}")
-
-
 if __name__ == "__main__":
     test_levenshtein_distance()

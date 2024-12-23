@@ -1,32 +1,78 @@
 import numpy as np
 
+def pegasos_svm(label, feature, _lambda=0.01, _T=1000):
+    n, d = feature.shape
+    w = np.zeros(d)
+    for t in range(1, _T + 1):
+        i = np.random.randint(n)
+        eta = 1 / (_lambda * t)
+        if label[i] * np.dot(w, feature[i]) < 1:
+            w = (1 - eta * _lambda) * w + eta * label[i] * feature[i]
+        else:
+            w = (1 - eta * _lambda) * w
+    return w
 
-class PegasosSVM:
-    def __init__(self, lambda_param=0.01, max_iter=1000):
-        self.lambda_param = lambda_param
-        self.max_iter = max_iter
-        self.weights = None
-        self.intercept = None
+if __name__ == '__main__':
+    from sklearn.datasets import make_blobs
+    import matplotlib.pyplot as plt
 
-    def fit(self, X, y):
-        n_samples, n_features = X.shape
-        self.weights = np.zeros(n_features)
-        self.intercept = 0
-        for t in range(1, self.max_iter + 1):
-            idx = np.random.randint(0, n_samples)
-            x_i = X[idx]
-            y_i = y[idx]
-            eta_t = 1 / (self.lambda_param * t)
-            margin = y_i * (np.dot(self.weights, x_i) + self.intercept)
-            if margin < 1:
-                self.weights = (1 - eta_t * self.lambda_param) * self.weights + eta_t * y_i * x_i
-                self.intercept = self.intercept + eta_t * y_i
-            else:
-                self.weights = (1 - eta_t * self.lambda_param) * self.weights
-                self.intercept = self.intercept
+    X, y = make_blobs(n_samples=100, centers=2, n_features=2, random_state=0)
+    y = np.where(y == 0, -1, y)
+    X[y == 0] = X[y == 0] + 1.5
+    X[y == 1] = X[y == 1] - 1.5
 
-            self.weights = np.minimum(1, (1 / np.sqrt(self.lambda_param)) / np.linalg.norm(self.weights)) * self.weights
+    X = np.append(X, np.ones((X.shape[0], 1)), axis=1)
+    y = y * 2 - 1
 
-    def predict(self, X):
-        linear_output = np.dot(X, self.weights) + self.intercept
-        return np.sign(linear_output)
+    plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis')
+    plt.xlim((-3, 10))
+    plt.ylim((-3, 10))
+    plt.title('Toy Dataset')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    plt.show()
+
+    w = pegasos_svm(y, X, 0.001, 1000000)
+
+
+    # Plot the decision boundary
+    plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis')
+    plt.xlim((-3, 10))
+    plt.ylim((-3, 10))
+
+    # Decision boundary is defined by w[0]*x + w[1]*y + w[2] = 0
+    # Rearranging for y: y = (-w[0]/w[1])*x - w[2]/w[1]
+    x_boundary = np.array([-3, 10])
+    if w[1] != 0:
+        y_boundary = (-w[0] / w[1]) * x_boundary - w[2] / w[1]
+        plt.plot(x_boundary, y_boundary, color='red', label='Decision Boundary')
+
+    plt.title('Decision Boundary')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    plt.legend()
+    plt.show()
+
+    from sklearn.svm import SVC
+
+    model = SVC(kernel='linear')
+    model.fit(X, y)
+
+    w = model.coef_[0]
+    b = model.intercept_[0]
+
+    # Plot the decision boundary
+    plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis')
+    plt.xlim((-3, 10))
+    plt.ylim((-3, 10))
+
+    x_boundary = np.array([-3, 10])
+    if w[1] != 0:
+        y_boundary = (-w[0] / w[1]) * x_boundary - b / w[1]
+        plt.plot(x_boundary, y_boundary, color='red', label='Decision Boundary')
+
+    plt.title('Decision Boundary')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    plt.legend()
+    plt.show()
