@@ -1,58 +1,68 @@
-# https://www.programiz.com/dsa/huffman-coding
-from collections import Counter
-
+from heapq import heappush, heappop
+from collections import defaultdict
 
 class Node:
-    def __init__(self, data):
-        self.data = data
-        self._left = None
-        self._right = None
+    def __init__(self, char, freq):
+        self.char = char
+        self.freq = freq
+        self.left = None
+        self.right = None
 
-    @property
-    def left(self):
-        return self._left
+    def __lt__(self, other):
+        return self.freq < other.freq
 
-    @property
-    def right(self):
-        return self._right
+def calculate_frequency(data):
+    freq = defaultdict(int)
+    for char in data:
+        freq[char] += 1
+    return freq
 
-    @left.setter
-    def left(self, node):
-        self._left = node
+def build_huffman_tree(freq):
+    heap = []
+    for char, f in freq.items():
+        heappush(heap, Node(char, f))
 
-    @right.setter
-    def right(self, node):
-        self._right = node
+    while len(heap) > 1:
+        left = heappop(heap)
+        right = heappop(heap)
+        merged = Node(None, left.freq + right.freq)
+        merged.left = left
+        merged.right = right
+        heappush(heap, merged)
 
-    def __repr__(self):
-        return f"Node({self.data})"
+    return heap[0] if heap else None
 
-def min_node(nodes):
-    min_node = nodes[0]
-    min_index = 0
-    for i in range(1, len(nodes)):
-        if nodes[i].data["freq"] < min_node.data["freq"]:
-            min_node = nodes[i]
-            min_index = i
-    return min_index
-
-
-# https://www.educative.io/answers/how-is-the-frequency-table-created-for-huffman-coding
-def create_frequency_tree(content):
-    ...
-
-
-
-def preorder(node, codes, prefix=""):
-    if node == None:
-        return
-    if len(node.data["char"]) == 1:
-        codes.append((node.data["char"], prefix))
-
-    preorder(node.left, codes, prefix + "0")
-    preorder(node.right, codes, prefix + "1")
-
-def get_codes(root):
-    codes = []
-    preorder(root, codes)
+def build_codes(node, prefix='', codes=None):
+    if codes is None:
+        codes = {}
+    if node is not None:
+        if node.char is not None:
+            codes[node.char] = prefix
+        build_codes(node.left, prefix + '0', codes)
+        build_codes(node.right, prefix + '1', codes)
     return codes
+
+def huffman_encoding(data):
+    if not data:
+        return "", {}
+
+    freq = calculate_frequency(data)
+    root = build_huffman_tree(freq)
+    codes = build_codes(root)
+    encoded_data = ''.join(codes[char] for char in data)
+    return encoded_data, codes
+
+def huffman_decoding(encoded_data, codes):
+    if not encoded_data or not codes:
+        return ""
+
+    reverse_codes = {v: k for k, v in codes.items()}
+    decoded_data = []
+    current_code = ""
+    for bit in encoded_data:
+        current_code += bit
+        if current_code in reverse_codes:
+            decoded_data.append(reverse_codes[current_code])
+            current_code = ""
+
+    return ''.join(decoded_data)
