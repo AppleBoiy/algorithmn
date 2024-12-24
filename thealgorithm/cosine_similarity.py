@@ -14,8 +14,3 @@ def test_cosine_similarity():
     a = [1, 2, 3]
     b = [4, 5, 6]
     assert isclose(cosine_similarity(a, b), 0.97, rel_tol=EPSILON)
-
-
-if __name__ == '__main__':
-    test_cosine_similarity()
-

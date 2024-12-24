@@ -56,9 +56,3 @@ def get_codes(root):
     codes = []
     preorder(root, codes)
     return codes
-
-if __name__ == "__main__":
-    sequence = "ABRACADABRA"
-    root = create_frequency_tree(sequence)
-    codes = get_codes(root)
-    print(codes)

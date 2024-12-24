@@ -56,15 +56,12 @@ def levenshtein_distance(s1, s2):
 
     return dp[l1][l2]
 
-def test_edit_distance():
+def __test_edit_distance():
     s1 = "execution"
     s2 = "intention"
     assert edit_distance(s1, s2) == 8
 
-def test_levenshtein_distance():
+def __test_levenshtein_distance():
     s1 = "execution"
     s2 = "intention"
     assert levenshtein_distance(s1, s2) == 5
-
-if __name__ == "__main__":
-    test_levenshtein_distance()

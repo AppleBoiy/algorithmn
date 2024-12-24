@@ -28,7 +28,7 @@ def preorder(node):
     preorder(node.right)
 
 
-def test_create_node():
+def __test_create_node():
     root = Node(1)
     root.left = Node(2)
     root.right = Node(3)
@@ -37,6 +37,3 @@ def test_create_node():
 
     print("Preorder traversal:")
     preorder(root)
-
-if __name__ == "__main__":
-    test_create_node()

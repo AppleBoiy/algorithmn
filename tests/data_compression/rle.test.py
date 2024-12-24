@@ -1,30 +1,8 @@
-# Run-Length Encoding
+from thealgorithm.data_compression.rle import decoder, encoder
 
-def encoder(content):
-    if not content:
-        return []
-    # [(5, 3), (2, 2), (8, 4)] → [5, 5, 5, 2, 2, 8, 8, 8, 8]
-    compressed_data = []
 
-    prev = content[0]
-    count = 1
 
-    for curr in content[1:]:
-        if curr == prev:
-            count +=1
-        else:
-            compressed_data.append((prev, count))
-            prev = curr
-            count = 1
-    return compressed_data + [(prev, count)]
-
-def decoder(compressed_data):
-    decompressed_data = []
-    for char, count in compressed_data:
-        decompressed_data += ([char] * count)
-    return decompressed_data
-
-def test_encoder():
+def __test_encoder():
     raw = [5, 5, 5, 2, 2, 8, 8, 8, 8]
     expected = [(5, 3), (2, 2), (8, 4)]
     compressed = encoder(raw)
@@ -52,7 +30,7 @@ def test_encoder():
 
     print("Passed")
 
-def test_decoder():
+def __test_decoder():
     compressed_data = [(5, 3), (2, 2), (8, 4)]
     expected = [5, 5, 5, 2, 2, 8, 8, 8, 8]
     decompressed = decoder(compressed_data)
@@ -80,7 +58,6 @@ def test_decoder():
 
     print("Passed")
 
-
-if __name__ == "__main__":
-    test_encoder()
-    test_decoder()
+if __name__ == '__main__':
+    __test_encoder()
+    __test_decoder()
